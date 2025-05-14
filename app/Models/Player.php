@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Player extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'first_name',
         'last_name',
@@ -13,11 +16,10 @@ class Player extends Model
         'about',
         'rubber_style',
         'paddle_type',
-        'division_id',
         'matches_played',
         'matches_won',
         'matches_lost',
-        'score',
+        'division_id'
     ];
 
     public function division()
@@ -25,8 +27,15 @@ class Player extends Model
         return $this->belongsTo(Division::class);
     }
 
-    public function grupos()
+    public function leagues()
     {
-        return $this->belongsToMany(Grupo::class, 'grupo_player');
+        return $this->belongsToMany(League::class)->withPivot('points')->withTimestamps();
+    }
+
+    public function matchdayGroups()
+    {
+        return $this->belongsToMany(MatchdayGroup::class, 'matchday_group_player')
+            ->withPivot('position', 'points')
+            ->withTimestamps();
     }
 }

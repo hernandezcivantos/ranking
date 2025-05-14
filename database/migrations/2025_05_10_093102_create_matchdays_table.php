@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('torneos', function (Blueprint $table) {
+        Schema::create('matchdays', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->date('fecha_inicio')->nullable();
-            $table->date('fecha_fin')->nullable();
-            $table->enum('estado', ['pendiente', 'en_marcha', 'parado', 'finalizado', 'cancelado'])->default('pendiente');
+            $table->foreignId('league_id')->constrained()->onDelete('cascade');
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->date('date')->nullable();
+            $table->enum('status', ['pendiente', 'en_marcha', 'finalizada'])->default('pendiente');
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('torneos');
+        Schema::dropIfExists('matchdays');
     }
 };

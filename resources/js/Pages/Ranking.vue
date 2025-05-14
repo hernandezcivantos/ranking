@@ -4,7 +4,7 @@
     <AuthenticatedLayout>
 
     <div class="p-6 max-w-6xl mx-auto">
-        <h1 class="text-3xl font-bold mb-6 text-center">🏓 Ranking de Jugadores</h1>
+        <h1 class="text-3xl font-bold mb-6 text-center">Ranking de Jugadores</h1>
 
         <!-- Tabla -->
         <div v-if="filteredPlayers.length === 0" class="text-center text-gray-500">No se encontraron jugadores.</div>

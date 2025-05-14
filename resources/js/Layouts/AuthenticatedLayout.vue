@@ -22,9 +22,7 @@ const showingNavigationDropdown = ref(false);
                         <div class="flex">
                             <!-- Logo personalizado -->
                             <div class="flex shrink-0 items-center">
-                                <Link :href="route('ranking')">
-                                    <img src="/images/logo.png" alt="Logo" class="h-20 w-auto"/>
-                                </Link>
+                                <img src="/images/logo.png" alt="Logo" class="h-20 w-auto"/>
                             </div>
                             <div class="flex shrink-0 items-center">
                                 <span class="text-2xl font-bold">CTM Vegas del Genil</span>
@@ -61,7 +59,6 @@ const showingNavigationDropdown = ref(false);
 
                                         <template #content>
                                             <DropdownLink :href="route('dashboard')">Administración</DropdownLink>
-                                            <DropdownLink :href="route('ranking')">Ver ranking</DropdownLink>
                                             <DropdownLink :href="route('logout')" method="post" as="button">Desconectar
                                             </DropdownLink>
                                         </template>
@@ -155,21 +152,18 @@ const showingNavigationDropdown = ref(false);
                             </div>
                         </div>
                         <template v-if="$page.props.auth?.user">
-                        <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('dashboard')">
-                                Administración
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink :href="route('ranking')">
-                                Ver ranking
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                :href="route('logout')"
-                                method="post"
-                                as="button"
-                            >
-                                Desconectar
-                            </ResponsiveNavLink>
-                        </div>
+                            <div class="mt-3 space-y-1">
+                                <ResponsiveNavLink :href="route('dashboard')">
+                                    Administración
+                                </ResponsiveNavLink>
+                                <ResponsiveNavLink
+                                    :href="route('logout')"
+                                    method="post"
+                                    as="button"
+                                >
+                                    Desconectar
+                                </ResponsiveNavLink>
+                            </div>
                         </template>
                     </div>
                 </div>

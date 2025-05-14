@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('grupos', function (Blueprint $table) {
-            $table->id();
-            $table->string('nombre');
-            $table->foreignId('torneo_id')->constrained()->onDelete('cascade');
-            $table->timestamps();
+        Schema::table('groups', function (Blueprint $table) {
+            $table->string('slug')->unique()->after('name');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('grupos');
+        Schema::table('groups', function (Blueprint $table) {
+            $table->dropColumn('slug');
+        });
     }
 };

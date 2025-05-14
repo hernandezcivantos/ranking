@@ -1,36 +1,3 @@
-<script setup>
-import { reactive } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import { usePage } from '@inertiajs/vue3';
-
-const props = defineProps({
-    player: Object
-});
-
-const form = useForm({
-    first_name: props.player?.first_name || '',
-    last_name: props.player?.last_name || '',
-    paddle_type: props.player?.paddle_type || '',
-    division: props.player?.division || '',
-    photo: null,
-});
-
-const submit = () => {
-    const options = {
-        forceFormData: true
-    };
-
-    if (props.player) {
-        form.put(`/players/${props.player.id}`, {
-            forceFormData: true,
-            onSuccess: () => emit('close'),
-        });
-    } else {
-        form.post('/players', options);
-    }
-};
-</script>
-
 <template>
     <form @submit.prevent="submit" class="space-y-4 max-w-md">
         <div>
@@ -47,7 +14,7 @@ const submit = () => {
         </div>
         <div>
             <label class="block">División</label>
-            <input v-model="form.division" class="border rounded px-2 py-1 w-full" />
+            <input v-model="form.division_id" class="border rounded px-2 py-1 w-full" />
         </div>
         <div>
             <label class="block">Foto</label>
@@ -61,3 +28,35 @@ const submit = () => {
         </button>
     </form>
 </template>
+
+<script setup>
+import { useForm } from '@inertiajs/vue3'
+import { defineProps, defineEmits } from 'vue'
+
+const props = defineProps({
+    player: Object
+})
+
+const emit = defineEmits(['close'])
+
+const form = useForm({
+    first_name: props.player?.first_name || '',
+    last_name: props.player?.last_name || '',
+    paddle_type: props.player?.paddle_type || '',
+    division_id: props.player?.division_id || '',
+    photo: null,
+})
+
+const submit = () => {
+    const options = {
+        forceFormData: true,
+        onSuccess: () => emit('close')
+    }
+
+    if (props.player) {
+        form.post(`/players/${props.player.id}`, options)
+    } else {
+        form.post('/players', options)
+    }
+}
+</script>
