@@ -10,6 +10,7 @@ use App\Http\Controllers\MatchdayController;
 use App\Http\Controllers\MatchdayGroupController;
 use App\Http\Controllers\PublicGroupController;
 use App\Http\Controllers\PublicLeagueController;
+use App\Http\Controllers\Public\JornadaPublicController;
 use App\Http\Controllers\PlayerController;
 
 // 🌐 Landing pública (Vue)
@@ -19,11 +20,10 @@ Route::get('/', function () {
 
 // 🔐 Rutas privadas (requieren login)
 Route::middleware(['auth'])->group(function () {
-
-    // Panel principal
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // 🔁 Redirección desde /matchdays a la primera liga del grupo
+    Route::post('/matchdays/{matchday}/generate-round', [MatchdayController::class, 'generateRound'])->name('matchdays.generateRound');
+
     Route::get('/matchdays', function () {
         $group = auth()->user()->group;
         $league = $group->leagues()->first();
@@ -35,16 +35,13 @@ Route::middleware(['auth'])->group(function () {
         return redirect()->route('leagues.matchdays.index', ['league' => $league->id]);
     });
 
-    // Grupos del usuario
     Route::resource('groups', GroupController::class);
 
-    // Ligas dentro de cada grupo
     Route::prefix('groups/{group}')->name('group.')->group(function () {
         Route::resource('leagues', LeagueController::class);
-        Route::post('leagues/{league}', [LeagueController::class, 'update'])->name('leagues.update'); // Para editar con FormData
+        Route::post('leagues/{league}', [LeagueController::class, 'update'])->name('leagues.update');
     });
 
-    // Jornadas dentro de cada liga
     Route::prefix('leagues/{league}')->name('leagues.')->group(function () {
         Route::get('matchdays', [MatchdayController::class, 'index'])->name('matchdays.index');
         Route::get('matchdays/create', [MatchdayController::class, 'create'])->name('matchdays.create');
@@ -54,14 +51,12 @@ Route::middleware(['auth'])->group(function () {
         Route::post('matchdays/{matchday}', [MatchdayController::class, 'update'])->name('matchdays.update');
     });
 
-    // Ranking de liga
     Route::get('/leagues/{league}/ranking', [LeagueController::class, 'ranking'])->name('leagues.ranking');
 
-    // Finalizar jornada
+    Route::get('/matchdays/{matchday}/play', [MatchdayController::class, 'play'])->name('matchdays.play');
     Route::get('/matchdays/{matchday}/finalize', [MatchdayController::class, 'editFinal'])->name('matchdays.final.edit');
     Route::post('/matchdays/{matchday}/finalize', [MatchdayController::class, 'finalize'])->name('matchdays.finalize');
 
-    // Grupos de jugadores por jornada
     Route::prefix('matchdays/{matchday}/groups')->name('matchdays.groups.')->group(function () {
         Route::get('/', [MatchdayGroupController::class, 'index'])->name('index');
         Route::get('create', [MatchdayGroupController::class, 'create'])->name('create');
@@ -71,7 +66,6 @@ Route::middleware(['auth'])->group(function () {
         Route::put('{group}', [MatchdayGroupController::class, 'update'])->name('update');
     });
 
-    // Jugadores
     Route::post('/players/{player}', [PlayerController::class, 'update'])->name('players.update');
     Route::resource('players', PlayerController::class);
 });
@@ -80,5 +74,14 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/public/{group:slug}', [PublicGroupController::class, 'show'])->name('public.group');
 Route::get('/public/{group:slug}/{league:slug}', [PublicLeagueController::class, 'ranking'])->name('public.league');
 
-// 🛡️ Autenticación
+// Vista Inertia para la jornada pública
+Route::get('/public/matchday/{matchday}', function ($matchday) {
+    return Inertia::render('PublicJornadaView', [
+        'jornadaId' => (int) $matchday
+    ]);
+})->name('public.matchday');
+
+// API de datos JSON para la jornada pública
+Route::get('/public/matchday/{jornadaId}/json', [JornadaPublicController::class, 'show']);
+
 require __DIR__.'/auth.php';

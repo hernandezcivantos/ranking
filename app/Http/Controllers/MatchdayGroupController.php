@@ -23,7 +23,7 @@ class MatchdayGroupController extends Controller
     {
         $players = $matchday->league->players()->orderBy('last_name')->get();
 
-        return Inertia::render('Matchdays/Create', [
+        return Inertia::render('Matchdays/CreateGroup', [
             'matchday' => $matchday,
             'players' => $players,
         ]);
@@ -44,8 +44,10 @@ class MatchdayGroupController extends Controller
 
         $group->players()->attach($data['player_ids']);
 
-        return redirect()->route('matchdays.show', $matchday->id)
-            ->with('success', 'Grupo creado correctamente.');
+        return redirect()->route('leagues.matchdays.show', [
+            'league' => $matchday->league_id,
+            'matchday' => $matchday->id
+        ])->with('success', 'Grupo creado correctamente.');
     }
 
     public function edit(Matchday $matchday, MatchdayGroup $group)
@@ -73,7 +75,10 @@ class MatchdayGroupController extends Controller
         $group->update(['name' => $request->name]);
         $group->players()->sync($request->player_ids);
 
-        return redirect()->route('matchdays.show', $matchday->id)->with('success', 'Grupo actualizado correctamente.');
+        return redirect()->route('leagues.matchdays.show', [
+            'league' => $matchday->league_id,
+            'matchday' => $matchday->id
+        ])->with('success', 'Grupo actualizado correctamente.');
     }
 
     public function show(Matchday $matchday, MatchdayGroup $group)
@@ -81,7 +86,7 @@ class MatchdayGroupController extends Controller
         return Inertia::render('Matchdays/ShowGroup', [
             'group' => $group,
             'matchday' => $matchday,
-            'leagueId' => $matchday->league_id, // ✅ Añade esto
+            'leagueId' => $matchday->league_id,
             'players' => $group->players()->with('division')->withPivot('points', 'position')->get(),
         ]);
     }

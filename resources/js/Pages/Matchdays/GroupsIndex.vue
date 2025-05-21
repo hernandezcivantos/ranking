@@ -10,12 +10,12 @@
         </template>
 
         <div class="px-8 py-6 space-y-4">
-            <div class="flex justify-end">
+            <div class="flex">
                 <Link
                     :href="route('matchdays.groups.create', matchday.id)"
                     class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                 >
-                    Nuevo grupo
+                    + Crear grupo
                 </Link>
             </div>
 

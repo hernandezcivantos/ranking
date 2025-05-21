@@ -37,7 +37,7 @@
                         class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                         @click="goToCreateMatchday"
                     >
-                        Crear jornada
+                        + Crear jornada
                     </button>
                 </div>
 
@@ -63,16 +63,16 @@
                                         Editar
                                     </button>
                                     <button
-                                        class="text-sm text-green-600 hover:underline"
-                                        @click="goToFinalizeMatchday(matchday.id)"
+                                        class="text-sm text-orange-600 hover:underline"
+                                        @click="goToPlayMatchday(matchday.id)"
                                     >
-                                        Finalizar
+                                        Jugar
                                     </button>
                                     <button
                                         class="text-sm text-purple-600 hover:underline"
                                         @click="goToGroups(matchday.id)"
                                     >
-                                        Ver grupos
+                                        Grupos
                                     </button>
                                 </div>
                             </div>
@@ -129,12 +129,11 @@ function goToCreateMatchday() {
 function goToEditMatchday(matchdayId) {
     router.visit(`/leagues/${selectedLeagueId.value}/matchdays/${matchdayId}/edit`)
 }
-
-function goToFinalizeMatchday(matchdayId) {
-    router.visit(`/matchdays/${matchdayId}/finalize`)
-}
-
 function goToGroups(matchdayId) {
     router.visit(`/matchdays/${matchdayId}/groups`)
+}
+
+function goToPlayMatchday(matchdayId) {
+    router.visit(`/matchdays/${matchdayId}/play`)
 }
 </script>

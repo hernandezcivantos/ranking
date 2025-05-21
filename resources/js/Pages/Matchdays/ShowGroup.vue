@@ -12,7 +12,6 @@
 
         <div class="px-8 py-6 space-y-4">
             <div class="flex justify-between items-center">
-                <h3 class="text-lg font-medium text-gray-700">Jugadores del grupo</h3>
                 <button
                     @click="goToEdit"
                     class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"

@@ -27,7 +27,7 @@
                     <div class="flex justify-between items-start">
                         <div>
                             <h2 class="text-lg font-semibold text-gray-800">{{ league.name }}</h2>
-                            <p class="text-sm text-gray-500">Slug: {{ league.slug }}</p>
+<!--                            <p class="text-sm text-gray-500">Slug: {{ league.slug }}</p>-->
                         </div>
                         <!-- Icono de enlace público -->
                         <a

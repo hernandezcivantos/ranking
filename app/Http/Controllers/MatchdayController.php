@@ -43,4 +43,42 @@ class MatchdayController extends Controller
             'matchday' => $matchday,
         ]);
     }
+
+    public function play(Matchday $matchday)
+    {
+        return Inertia::render('Matchdays/PlayPanel', [
+            'matchday' => $matchday->load('groups.players', 'groups.matches')
+        ]);
+    }
+
+    public function generateRound(Request $request, Matchday $matchday)
+    {
+        $data = $request->validate([
+            'type' => 'required|in:robin,brackets',
+            'qualified_per_group' => 'required|integer|min:1',
+            'sport' => 'required|in:tenis_mesa,futbol,custom',
+            'sets' => 'nullable|integer',
+            'duration' => 'nullable|integer',
+        ]);
+
+        if ($data['type'] === 'robin') {
+            foreach ($matchday->groups as $group) {
+                $players = $group->players;
+
+                for ($i = 0; $i < count($players); $i++) {
+                    for ($j = $i + 1; $j < count($players); $j++) {
+                        $group->matches()->create([
+                            'player1_name' => $players[$i]->first_name . ' ' . $players[$i]->last_name,
+                            'player2_name' => $players[$j]->first_name . ' ' . $players[$j]->last_name,
+                        ]);
+                    }
+                }
+            }
+        }
+
+        // Más adelante: lógica para brackets
+
+        return back()->with('success', 'Ronda tipo ' . $data['type'] . ' generada correctamente.');
+    }
+
 }
