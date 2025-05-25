@@ -3,6 +3,7 @@
     <PlayerFormModal
         :show="showCreateModal"
         :divisions="props.divisions"
+        :clubs="props.clubs"
         @close="showCreateModal = false"
     />
     <PlayerEditModal
@@ -11,6 +12,7 @@
         :show="true"
         :player="selectedPlayer"
         :divisions="props.divisions"
+        :clubs="props.clubs"
         @close="closeEditModal"
     />
     <ConfirmDeleteModal
@@ -51,6 +53,7 @@
                         <th class="p-4 text-center">Victorias</th>
                         <th class="p-4 text-center">Derrotas</th>
                         <th class="p-4">División</th>
+                        <th class="p-4">Club</th>
                         <th class="p-4">Acciones</th>
                     </tr>
                     </thead>
@@ -62,6 +65,7 @@
                         <td class="p-4 text-center">{{ player.matches_won }}</td>
                         <td class="p-4 text-center">{{ player.matches_lost }}</td>
                         <td class="p-4">{{ player.division?.name || '—' }}</td>
+                        <td class="p-4">{{ player.club?.name || '—' }}</td>
                         <td class="p-4">
                             <button @click="openEditModal(player)" class="text-blue-600 hover:underline">Editar</button>
                             <button @click="destroyPlayer(player)" class="text-red-600 hover:underline ml-4">Eliminar
@@ -116,6 +120,7 @@ const props = defineProps({
     players: Object,
     filters: Object,
     divisions: Array,
+    clubs: Array,
 });
 
 const translateLabel = (label) => {

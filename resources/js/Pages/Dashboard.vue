@@ -30,6 +30,14 @@
                     <h3 class="text-lg font-bold text-blue-800 mb-1">Jugadores</h3>
                     <p class="text-sm text-gray-600">Gestiona los jugadores registrados</p>
                 </div>
+
+                <div
+                    class="p-6 bg-white border border-gray-200 rounded-xl shadow hover:shadow-lg cursor-pointer transition-transform hover:-translate-y-1"
+                    @click="goTo('/clubs')"
+                >
+                    <h3 class="text-lg font-bold text-blue-800 mb-1">Clubes</h3>
+                    <p class="text-sm text-gray-600">Gestiona los clubes registrados</p>
+                </div>
             </div>
         </div>
     </AuthenticatedLayout>

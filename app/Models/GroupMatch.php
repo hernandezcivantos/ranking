@@ -3,15 +3,36 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class GroupMatch extends Model
 {
-    protected $fillable = ['matchday_group_id', 'player1_name', 'player2_name', 'winner_name'];
+    protected $fillable = [
+        'group_id',
+        'player1_id',
+        'player2_id',
+        'sets',
+        'status',
+        'field_number',
+        'is_finished',
+    ];
 
-    public function group(): BelongsTo
+    protected $casts = [
+        'sets' => 'array',
+        'is_finished' => 'boolean',
+    ];
+
+    public function group()
     {
-        return $this->belongsTo(MatchdayGroup::class, 'matchday_group_id');
+        return $this->belongsTo(MatchdayGroup::class);
+    }
+
+    public function player1()
+    {
+        return $this->belongsTo(Player::class, 'player1_id');
+    }
+
+    public function player2()
+    {
+        return $this->belongsTo(Player::class, 'player2_id');
     }
 }
-

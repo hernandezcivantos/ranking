@@ -17,11 +17,23 @@ class Group extends Model {
         });
     }
 
+    public function players()
+    {
+        return $this->belongsToMany(Player::class)
+            ->withPivot('position')
+            ->with('club');
+    }
+
     public function user() {
         return $this->belongsTo(User::class);
     }
 
     public function leagues() {
         return $this->hasMany(League::class);
+    }
+
+    public function matches()
+    {
+        return $this->hasMany(GroupMatch::class, 'group_id');
     }
 }

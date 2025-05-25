@@ -45,14 +45,14 @@ class MatchdaySeeder extends Seeder
 
             // Crear partidos en el grupo usando nombre completo
             GroupMatch::create([
-                'matchday_group_id' => $group->id,
+                'group_id' => $group->id,
                 'player1_name' => $players[0]->first_name . ' ' . $players[0]->last_name,
                 'player2_name' => $players[1]->first_name . ' ' . $players[1]->last_name,
                 'winner_name' => $players[0]->first_name . ' ' . $players[0]->last_name
             ]);
 
             GroupMatch::create([
-                'matchday_group_id' => $group->id,
+                'group_id' => $group->id,
                 'player1_name' => $players[0]->first_name . ' ' . $players[0]->last_name,
                 'player2_name' => $players[2]->first_name . ' ' . $players[2]->last_name,
                 'winner_name' => $players[2]->first_name . ' ' . $players[2]->last_name

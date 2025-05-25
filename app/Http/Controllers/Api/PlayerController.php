@@ -12,7 +12,7 @@ class PlayerController extends Controller
     {
         // Devolveremos todos los jugadores ordenados por partidos ganados
         return response()->json(
-            Player::with('division')->orderByDesc('score')->get()
+            Player::with('division')->with('club')->orderByDesc('score')->get()
         );
     }
 }

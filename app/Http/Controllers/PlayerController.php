@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Club;
 use App\Models\Player;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -11,10 +12,13 @@ class PlayerController extends Controller
 {
     public function index(Request $request)
     {
+        $group = auth()->user()->group;
+
         $search = $request->input('search');
 
         $players = Player::query()
-            ->with('division')
+            ->with(['division', 'club'])
+            ->where('group_id', $group->id) // 👈 importante
             ->when($search, function ($query, $search) {
                 $query->whereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$search}%"]);
             })
@@ -22,9 +26,13 @@ class PlayerController extends Controller
             ->paginate(25)
             ->withQueryString();
 
+        $divisions = Division::where('group_id', $group->id)->orderBy('name')->get();
+        $clubs = Club::where('group_id', $group->id)->orderBy('name')->get();
+
         return Inertia::render('Players/Index', [
-            'divisions' => Division::all(),
             'players' => $players,
+            'divisions' => $divisions,
+            'clubs' => $clubs,
             'filters' => [
                 'search' => $search,
             ],
@@ -33,8 +41,11 @@ class PlayerController extends Controller
 
     public function create()
     {
+        $group = auth()->user()->group;
+
         return Inertia::render('Players/Create', [
-            'divisions' => Division::all(),
+            'divisions' => Division::where('group_id', $group->id)->get(),
+            'clubs' => Club::where('group_id', $group->id)->get(),
         ]);
     }
 
@@ -45,6 +56,7 @@ class PlayerController extends Controller
             'last_name' => 'required|string|max:100',
             'paddle_type' => 'nullable|string',
             'division_id' => 'nullable|exists:divisions,id',
+            'club_id' => 'nullable|exists:clubs,id',
             'photo' => 'nullable|image|max:2048',
         ], [
             'first_name.required' => 'El campo nombre es obligatorio.',
@@ -67,11 +79,14 @@ class PlayerController extends Controller
 
     public function edit(Player $player)
     {
-        return Inertia::render('Players/Edit',
-            [
-                'player' => $player,
-                'divisions' => Division::all(),
-            ]);
+
+        $group = auth()->user()->group;
+
+        return Inertia::render('Players/Create', [
+            'player' => $player,
+            'divisions' => Division::where('group_id', $group->id)->get(),
+            'clubs' => Club::where('group_id', $group->id)->get(),
+        ]);
     }
 
     public function update(Request $request, Player $player)
@@ -81,6 +96,7 @@ class PlayerController extends Controller
             'last_name' => 'required|string|max:100',
             'paddle_type' => 'nullable|string',
             'division_id' => 'nullable|exists:divisions,id',
+            'club_id' => 'nullable|exists:clubs,id',
             'photo' => 'nullable|image|max:2048',
         ], [
             'first_name.required' => 'El campo nombre es obligatorio.',

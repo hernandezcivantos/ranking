@@ -17,7 +17,7 @@ class BracketRound extends Model
 
     public function matches(): HasMany
     {
-        return $this->hasMany(BracketMatch::class);
+        return $this->hasMany(GroupMatch::class, 'group_id');
     }
 }
 

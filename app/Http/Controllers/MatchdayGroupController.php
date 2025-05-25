@@ -90,4 +90,20 @@ class MatchdayGroupController extends Controller
             'players' => $group->players()->with('division')->withPivot('points', 'position')->get(),
         ]);
     }
+
+    public function finish(Request $request, GroupMatch $match)
+    {
+        $request->validate([
+            'sets' => 'required|array',
+            'field_number' => 'nullable|integer',
+        ]);
+
+        $match->update([
+            'sets' => $request->input('sets'),
+            'field_number' => $request->input('field_number'),
+            'is_finished' => true,
+        ]);
+
+        return response()->json(['message' => 'Encuentro finalizado correctamente.']);
+    }
 }

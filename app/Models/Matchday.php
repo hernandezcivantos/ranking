@@ -2,12 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Matchday extends Model
 {
-    protected $fillable = ['league_id', 'name', 'status'];
+    protected $fillable = [
+        'league_id',
+        'name',
+        'status',
+        'round_type',
+        'qualified_per_group',
+        'sport',
+        'sets_per_match',
+        'fields_total',
+        'description',
+        'date',
+    ];
 
     public function league()
     {
@@ -24,4 +34,3 @@ class Matchday extends Model
         return $this->hasMany(Bracket::class);
     }
 }
-

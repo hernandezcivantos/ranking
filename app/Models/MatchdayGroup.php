@@ -21,7 +21,7 @@ class MatchdayGroup extends Model
 
     public function matches()
     {
-        return $this->hasMany(GroupMatch::class);
+        return $this->hasMany(GroupMatch::class, 'group_id');
     }
 }
 

@@ -25,6 +25,15 @@
                     </select>
                 </div>
                 <div>
+                    <label class="block mb-1">Club</label>
+                    <select v-model="form.club_id" class="w-full border rounded px-3 py-2">
+                        <option value="">Sin club</option>
+                        <option v-for="club in clubs" :key="club.id" :value="club.id">
+                            {{ club.name }}
+                        </option>
+                    </select>
+                </div>
+                <div>
                     <label class="block mb-1">Foto</label>
                     <input type="file" @change="e => form.photo = e.target.files[0]" />
                     <div v-if="props.player?.photo" class="mt-2">
@@ -56,6 +65,7 @@ import { watch, ref, computed } from 'vue';
 const props = defineProps({
     show: Boolean,
     divisions: Array,
+    clubs: Array,
     player: Object,
 });
 
@@ -66,6 +76,7 @@ const form = useForm({
     last_name: '',
     paddle_type: '',
     division_id: '',
+    club_id: '',
     photo: null,
 });
 

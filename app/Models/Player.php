@@ -19,7 +19,8 @@ class Player extends Model
         'matches_played',
         'matches_won',
         'matches_lost',
-        'division_id'
+        'division_id',
+        'club_id'
     ];
 
     public function division()
@@ -37,5 +38,10 @@ class Player extends Model
         return $this->belongsToMany(MatchdayGroup::class, 'matchday_group_player')
             ->withPivot('position', 'points')
             ->withTimestamps();
+    }
+
+    public function club()
+    {
+        return $this->belongsTo(Club::class);
     }
 }

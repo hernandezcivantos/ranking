@@ -7,6 +7,7 @@ const props = defineProps({
     show: Boolean,
     player: Object,
     divisions: Array,
+    clubs: Array,
 });
 
 const emit = defineEmits(['close']);
@@ -16,6 +17,7 @@ const form = useForm({
     last_name: '',
     paddle_type: '',
     division_id: '',
+    club_id: '',
     photo: null,
 });
 
@@ -27,6 +29,7 @@ watch(
             form.last_name = newPlayer.last_name || '';
             form.paddle_type = newPlayer.paddle_type || '';
             form.division_id = newPlayer.division_id || '';
+            form.club_id = newPlayer.club_id || '';
             form.photo = null;
         }
     },
@@ -85,6 +88,15 @@ watch(() => props.show, (newVal) => {
                         </option>
                     </select>
                     <InputError class="mt-2" :message="form.errors.division_id" />
+                </div>
+                <div>
+                    <label class="block mb-1">Club</label>
+                    <select v-model="form.club_id" class="w-full border rounded px-3 py-2">
+                        <option value="">Sin club</option>
+                        <option v-for="club in clubs" :key="club.id" :value="club.id">
+                            {{ club.name }}
+                        </option>
+                    </select>
                 </div>
                 <div>
                     <label class="block mb-1">Foto</label>

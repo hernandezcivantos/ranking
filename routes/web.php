@@ -2,37 +2,28 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\{
+    DashboardController, GroupController, LeagueController,
+    MatchdayController, MatchdayGroupController, PlayerController, ClubController,
+    PublicGroupController, PublicLeagueController, Public\JornadaPublicController
+};
 
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\GroupController;
-use App\Http\Controllers\LeagueController;
-use App\Http\Controllers\MatchdayController;
-use App\Http\Controllers\MatchdayGroupController;
-use App\Http\Controllers\PublicGroupController;
-use App\Http\Controllers\PublicLeagueController;
-use App\Http\Controllers\Public\JornadaPublicController;
-use App\Http\Controllers\PlayerController;
+Route::get('/', fn() => Inertia::render('Landing'))->name('landing');
 
-// 🌐 Landing pública (Vue)
-Route::get('/', function () {
-    return Inertia::render('Landing');
-})->name('landing');
-
-// 🔐 Rutas privadas (requieren login)
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Jornadas
     Route::post('/matchdays/{matchday}/generate-round', [MatchdayController::class, 'generateRound'])->name('matchdays.generateRound');
+    Route::post('/matchdays/{matchday}/recalculate-round', [MatchdayController::class, 'recalculateRound'])->name('matchdays.recalculateRound');
+    Route::patch('/group-matches/{match}/finish', [MatchdayController::class, 'finishMatch'])->name('group-matches.finish');
 
     Route::get('/matchdays', function () {
         $group = auth()->user()->group;
         $league = $group->leagues()->first();
-
-        if (!$league) {
-            return redirect()->route('dashboard')->with('error', 'No tienes ligas disponibles');
-        }
-
-        return redirect()->route('leagues.matchdays.index', ['league' => $league->id]);
+        return $league
+            ? redirect()->route('leagues.matchdays.index', ['league' => $league->id])
+            : redirect()->route('dashboard')->with('error', 'No tienes ligas disponibles');
     });
 
     Route::resource('groups', GroupController::class);
@@ -52,7 +43,6 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::get('/leagues/{league}/ranking', [LeagueController::class, 'ranking'])->name('leagues.ranking');
-
     Route::get('/matchdays/{matchday}/play', [MatchdayController::class, 'play'])->name('matchdays.play');
     Route::get('/matchdays/{matchday}/finalize', [MatchdayController::class, 'editFinal'])->name('matchdays.final.edit');
     Route::post('/matchdays/{matchday}/finalize', [MatchdayController::class, 'finalize'])->name('matchdays.finalize');
@@ -68,20 +58,15 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/players/{player}', [PlayerController::class, 'update'])->name('players.update');
     Route::resource('players', PlayerController::class);
+
+    Route::get('/clubs', [ClubController::class, 'index'])->name('clubs.index');
+    Route::post('/clubs', [ClubController::class, 'store'])->name('clubs.store');
+    Route::put('/clubs/{club}', [ClubController::class, 'update'])->name('clubs.update');
 });
 
-// 📣 Rutas públicas
 Route::get('/public/{group:slug}', [PublicGroupController::class, 'show'])->name('public.group');
 Route::get('/public/{group:slug}/{league:slug}', [PublicLeagueController::class, 'ranking'])->name('public.league');
-
-// Vista Inertia para la jornada pública
-Route::get('/public/matchday/{matchday}', function ($matchday) {
-    return Inertia::render('PublicJornadaView', [
-        'jornadaId' => (int) $matchday
-    ]);
-})->name('public.matchday');
-
-// API de datos JSON para la jornada pública
+Route::get('/public/matchday/{matchday}', fn($matchday) => Inertia::render('PublicJornadaView', ['jornadaId' => (int) $matchday]))->name('public.matchday');
 Route::get('/public/matchday/{jornadaId}/json', [JornadaPublicController::class, 'show']);
 
 require __DIR__.'/auth.php';
